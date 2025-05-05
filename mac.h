@@ -14,5 +14,8 @@
 #define XK_a        0
 #define XK_s		1
 #define XK_d        2
+#define XK_m              46
+#define XK_c              8
+#define XK_o              31
 
 #endif

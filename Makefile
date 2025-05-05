@@ -18,13 +18,18 @@ SRCS_NORMAL = get_next_line/get_next_line.c \
 		map_validation/check_map.c \
 		map_validation/check_map_utils.c \
 		error_handling/handle_error.c \
-		window.c \
-		minimap.c \
-		player.c \
-		movement.c \
-		init_struct.c \
-		raycast.c \
-		raycast_helper.c \
+		window/window.c \
+		window/window_utils.c \
+		window/init_struct.c \
+		minimap/minimap.c \
+		player/player.c \
+		movement/movement.c \
+		movement/update_movement.c \
+		movement/movement_helper.c \
+		raycast/raycast.c \
+		raycast/raycast_3d.c \
+		raycast/raycast_helper.c \
+		raycast/enemy_sprites.c \
 
 OBJS = $(SRCS_NORMAL:.c=.o)
 
