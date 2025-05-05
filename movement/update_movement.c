@@ -46,17 +46,13 @@ void movement_ws(t_var *data, t_movestat *movestat)
 
 void movement_da(t_var *data, t_movestat *movestat)
 {
-    int strafe_px;
-    int strafe_py;
     int strafe_ipx;
     int strafe_ipy;
 
-    strafe_px = data->player.px - movestat->yo;
-    strafe_py = data->player.py + movestat->xo;
-    strafe_ipx = strafe_px / TILE_SIZE;
-    strafe_ipy = strafe_py / TILE_SIZE;
     if (data->move.move_d)
     {   
+        strafe_ipx = (data->player.px - movestat->yo) / TILE_SIZE;
+        strafe_ipy = (data->player.py + movestat->xo) / TILE_SIZE;
         if (data->map.arr[movestat->ipy][strafe_ipx] == '0' || data->map.arr[movestat->ipy][strafe_ipx] == '3')
             data->player.px -= data->player.pdy;
         if (data->map.arr[strafe_ipy][movestat->ipx] == '0' || data->map.arr[strafe_ipy][movestat->ipx] == '3')
@@ -64,6 +60,8 @@ void movement_da(t_var *data, t_movestat *movestat)
     }
     if (data->move.move_a)
     {
+        strafe_ipx = (data->player.px + movestat->yo) / TILE_SIZE;
+        strafe_ipy = (data->player.py - movestat->xo) / TILE_SIZE;
         if (data->map.arr[movestat->ipy][strafe_ipx] == '0' || data->map.arr[movestat->ipy][strafe_ipx] == '3')
             data->player.px += data->player.pdy;
         if (data->map.arr[strafe_ipy][movestat->ipx] == '0' || data->map.arr[strafe_ipy][movestat->ipx] == '3')
