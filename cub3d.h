@@ -29,10 +29,10 @@
 
 /*------------------------------MACRO------------------------------*/
 
-#define WINDOW_WIDTH_W 960
-#define WINDOW_WIDTH 1920
-#define WINDOW_HEIGHT_W 544
-#define WINDOW_HEIGHT 1088
+#define WINDOW_WIDTH 960
+#define WINDOW_WIDTH_W 1920
+#define WINDOW_HEIGHT 544
+#define WINDOW_HEIGHT_W 1088
 #define PLAYER_COLOR 0x00FF0000
 #define RAYCAST_COLOR 0x0000FF00
 #define WALL_COLOR 0x00AAAAAA
@@ -40,15 +40,16 @@
 #define DOOR_OPEN_COLOR 0xA52A2A
 #define EMPTY_COLOR 0x404040
 
-# define MINIMAP_SIZE_W 128
+# define MINIMAP_SIZE 128
 # define MINIMAP_TILE 8
-# define MINIMAP_SIZE 256
+# define MINIMAP_SIZE_W 256
 
-#define STRIP_WIDTH 2
+#define STRIP_WIDTH 1
 #define CEILING_COLOR 0x444444
 #define FLOOR_COLOR 0x222222
 
 #define TILE_SIZE  32
+#define TILE_SIZE_TEXTURE  64
 
 #define PI  3.14159265359
 #define P2  (PI / 2)
@@ -72,7 +73,6 @@
 
 typedef enum	direction
 {
-	NOTHING,
 	NORTH,
 	EAST,
 	SOUTH,
@@ -81,10 +81,23 @@ typedef enum	direction
 	CEILING
 }				direction;
 
+typedef struct s_img
+{
+    void    *img;
+    char    *addr;
+    int     bits_per_pixel;
+    int     line_length;
+    int     endian;
+	int		height;
+	int		width;
+}   t_img;
+
 typedef struct	s_identifier
 {
 	direction	direction;
 	char		*filename;			// need to be freed
+	t_img		attr;
+	int			color;
 }				t_id;
 
 typedef struct  s_map
@@ -92,12 +105,7 @@ typedef struct  s_map
 	char	*name;
 	
 	int		elements_set;
-	t_id	north;
-	t_id	east;
-	t_id	south;
-	t_id	west;
-	t_id	floor;
-	t_id	ceiling;
+	t_id 	textures[6];
 
 	int		content_start;
     int		height;
@@ -113,14 +121,6 @@ typedef struct	cub3d
 {
 	t_map	map;
 }				t_cub;
-
-typedef struct s_img {
-    void    *img;
-    char    *addr;
-    int     bits_per_pixel;
-    int     line_length;
-    int     endian;
-}   t_img;
 
 typedef struct s_play {
 	float px;
@@ -210,6 +210,10 @@ typedef struct s_ray {
 	float disV;
 	float disH;
 	float tan;
+	float tx;
+	float ty;
+	float ty_off;
+	float ty_step;
 } t_ray;
 
 
@@ -349,8 +353,10 @@ void draw_rays(t_var *data);
 void create_rayhit(t_var *data, t_ray *ray, t_rayhit *rayhit, int tile_size);
 
 // from raycast_3d.c
-void draw_3d_helper(t_var *data, t_ray *ray, int lineOff, int lineH);
 void draw_3d(t_var *data, t_ray *ray);
+void draw_3d_helper(t_var *data, t_ray *ray, int lineOff, int lineH);
+void set_tx(t_var *data, t_ray *ray);
+void    draw_wall_strip(t_img *img, int x, int y, int color);
 
 // from raycast_helper.c
 void cast_vertical (t_var* data, t_ray* ray);
@@ -358,6 +364,13 @@ void vertical_dof(t_var* data, t_ray* ray);
 void cast_horizontal (t_var *data, t_ray * ray);
 void horizontal_dof(t_var* data, t_ray* ray);
 bool is_wall(t_map *map, int x, int y);
+
+// from textures.c
+void    load_textures(t_var *data);
+int extract_img(void *mlx, t_img *attr, char *filename);
+int    extract_rgb(int *color, char *rgb);
+t_img *get_texture(t_var *data, t_ray *ray);
+int    get_color(t_ray *ray, t_img *tex);
 
 // from enemy_sprites.c
 void draw_sprites(t_var *data);
